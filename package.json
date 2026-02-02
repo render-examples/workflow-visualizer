@@ -1,0 +1,26 @@
+{
+  "name": "workflow-visualizer",
+  "version": "1.0.0",
+  "description": "Reusable workflow visualization component for Render demo projects",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/render-examples/workflow-visualizer"
+  },
+  "keywords": [
+    "workflow",
+    "visualization",
+    "render",
+    "react"
+  ],
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "framer-motion": ">=11.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "typescript": "^5.0.0"
+  }
+}
