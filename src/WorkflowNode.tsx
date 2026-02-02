@@ -203,16 +203,16 @@ export function WorkflowNodeDetail({
 
 			<p className="text-[#888] text-sm mb-4">{node.description}</p>
 
-			{node.details && node.details.length > 0 && (
-				<div className="space-y-2">
-					{node.details.map((detail, i) => (
-						<div key={i} className="flex justify-between text-sm">
-							<span className="text-[#666]">{detail.label}</span>
-							<span className="text-white font-mono">{detail.value}</span>
-						</div>
-					))}
-				</div>
-			)}
+		{node.details && node.details.length > 0 && (
+			<div className="space-y-3">
+				{node.details.map((detail, i) => (
+					<div key={i} className="text-sm">
+						<div className="text-[#666] mb-1">{detail.label}</div>
+						<div className="text-white font-mono">{detail.value}</div>
+					</div>
+				))}
+			</div>
+		)}
 		</motion.div>
 	);
 }

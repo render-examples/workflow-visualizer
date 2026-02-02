@@ -9,13 +9,20 @@ import { WorkflowNode, WorkflowNodeDetail } from "./WorkflowNode";
 
 interface WorkflowVisualizerProps {
 	config: WorkflowConfig;
+	/** Node ID to show in the detail panel by default */
+	defaultSelectedNode?: string;
 }
 
-export function WorkflowVisualizer({ config }: WorkflowVisualizerProps) {
+export function WorkflowVisualizer({
+	config,
+	defaultSelectedNode,
+}: WorkflowVisualizerProps) {
 	const [selectedTrigger, setSelectedTrigger] = useState(config.defaultTrigger);
 	const [currentStep, setCurrentStep] = useState(0);
 	const [isPlaying, setIsPlaying] = useState(true);
-	const [selectedNode, setSelectedNode] = useState<string | null>(null);
+	const [selectedNode, setSelectedNode] = useState<string | null>(
+		defaultSelectedNode ?? null,
+	);
 
 	// Get the current trigger flow
 	const currentFlow = useMemo(
@@ -96,15 +103,13 @@ export function WorkflowVisualizer({ config }: WorkflowVisualizerProps) {
 
 	const handleNodeClick = useCallback(
 		(nodeId: string) => {
-			// If clicking a trigger node, select that trigger
+			// If clicking a trigger node, also switch to that trigger's flow
 			if (triggerNodes.has(nodeId)) {
 				setSelectedTrigger(nodeId);
-				setSelectedNode(null);
-			} else {
-				// Otherwise show details
-				setIsPlaying(false);
-				setSelectedNode((prev) => (prev === nodeId ? null : nodeId));
 			}
+			// Show details for any node (toggle if already selected)
+			setIsPlaying(false);
+			setSelectedNode((prev) => (prev === nodeId ? null : nodeId));
 		},
 		[triggerNodes],
 	);
