@@ -15,27 +15,31 @@ interface WorkflowNodeProps {
 // Colors: Purple (#9B52FB), Blue (#33ACFF), Magenta (#F347FF)
 const nodeTypeStyles: Record<
 	NodeType,
-	{ bg: string; border: string; accent: string }
+	{ bg: string; accent: string; selectedBg: string; selectedText: string }
 > = {
 	trigger: {
-		bg: "bg-[#1C0037]",
-		border: "border-[#9B52FB]",
+		bg: "#1C0037",
 		accent: "#9B52FB",
+		selectedBg: "#9B52FB",
+		selectedText: "#1C0037",
 	},
 	orchestrator: {
-		bg: "bg-[#00102A]",
-		border: "border-[#33ACFF]",
+		bg: "#00102A",
 		accent: "#33ACFF",
+		selectedBg: "#33ACFF",
+		selectedText: "#00102A",
 	},
 	batch: {
-		bg: "bg-[#2C001D]",
-		border: "border-[#F347FF]",
+		bg: "#2C001D",
 		accent: "#F347FF",
+		selectedBg: "#F347FF",
+		selectedText: "#2C001D",
 	},
 	task: {
-		bg: "bg-[#141414]",
-		border: "border-[#333]",
-		accent: "#666",
+		bg: "#141414",
+		accent: "#555",
+		selectedBg: "#888",
+		selectedText: "#141414",
 	},
 };
 
@@ -74,52 +78,61 @@ export function WorkflowNode({
 			{isBatch && !isGrayedOut && (
 				<>
 					<div
-						className={`absolute ${styles.bg} ${styles.border} border`}
+						className="absolute border-2"
 						style={{
 							top: 8,
 							left: 8,
 							right: -8,
 							bottom: -8,
+							backgroundColor: styles.bg,
+							borderColor: styles.accent,
 						}}
 					/>
 					<div
-						className={`absolute ${styles.bg} ${styles.border} border`}
+						className="absolute border-2"
 						style={{
 							top: 4,
 							left: 4,
 							right: -4,
 							bottom: -4,
+							backgroundColor: styles.bg,
+							borderColor: styles.accent,
 						}}
 					/>
 				</>
 			)}
 
-			{/* Main node */}
-			<button
-				type="button"
-				className={`
+		{/* Main node */}
+		<button
+			type="button"
+			className={`
           relative cursor-pointer select-none text-left
-          ${styles.bg} ${styles.border}
-          border p-4 min-w-[140px]
-          transition-colors
-          ${isSelected ? "ring-2 ring-white" : ""}
+          border-2 p-4 min-w-[140px]
+          transition-all duration-200
           ${isTrigger && !isSelectedTrigger ? "hover:opacity-70" : ""}
         `}
-				onClick={onClick}
-			>
+			style={{
+				backgroundColor: isSelected ? styles.selectedBg : styles.bg,
+				borderColor: styles.accent,
+			}}
+			onClick={onClick}
+		>
 				{/* Animated stroke border when active */}
 				{isActive && !isGrayedOut && <AnimatedBorder nodeType={node.type} />}
 
 				{/* Type badge */}
 				<div
 					className="text-[10px] uppercase tracking-wider mb-1"
-					style={{ color: styles.accent }}
+					style={{ color: isSelected ? styles.selectedText : styles.accent }}
 				>
 					{nodeTypeLabels[node.type]}
 				</div>
 
 				{/* Node label */}
-				<div className="text-white font-mono text-sm font-medium">
+				<div 
+					className="font-mono text-sm font-medium"
+					style={{ color: isSelected ? styles.selectedText : '#fff' }}
+				>
 					{node.label}
 				</div>
 			</button>
@@ -127,34 +140,41 @@ export function WorkflowNode({
 	);
 }
 
+// Brighter colors for animated active state (more visible than base accent)
+const activeStrokeColors: Record<NodeType, string> = {
+	trigger: "#C490FF", // lighter purple
+	orchestrator: "#7DD3FF", // lighter blue
+	batch: "#FF8FFF", // lighter magenta
+	task: "#999", // lighter gray
+};
+
 // Animated border stroke that circles around the node
 function AnimatedBorder({ nodeType }: { nodeType: NodeType }) {
-	// Use white for visibility against colored borders
-	const strokeColor = nodeType === "task" ? "#888" : "#fff";
+	const strokeColor = activeStrokeColors[nodeType];
 
 	return (
 		<svg
 			className="absolute inset-0 w-full h-full pointer-events-none"
 			style={{
-				left: -1,
-				top: -1,
-				width: "calc(100% + 2px)",
-				height: "calc(100% + 2px)",
+				left: -2,
+				top: -2,
+				width: "calc(100% + 4px)",
+				height: "calc(100% + 4px)",
 			}}
 		>
 			<motion.rect
-				x="0"
-				y="0"
-				width="100%"
-				height="100%"
+				x="1"
+				y="1"
+				width="calc(100% - 2px)"
+				height="calc(100% - 2px)"
 				fill="none"
 				stroke={strokeColor}
-				strokeWidth="2"
-				strokeDasharray="8 4"
+				strokeWidth="3"
+				strokeDasharray="10 5"
 				initial={{ strokeDashoffset: 0 }}
-				animate={{ strokeDashoffset: -24 }}
+				animate={{ strokeDashoffset: -30 }}
 				transition={{
-					duration: 1,
+					duration: 0.8,
 					repeat: Infinity,
 					ease: "linear",
 				}}
@@ -175,7 +195,8 @@ export function WorkflowNodeDetail({
 
 	return (
 		<motion.div
-			className={`${styles.bg} ${styles.border} border p-6 w-72 shrink-0`}
+			className="border-2 p-6 w-72 shrink-0"
+			style={{ backgroundColor: styles.bg, borderColor: styles.accent }}
 			initial={{ opacity: 0, x: 20 }}
 			animate={{ opacity: 1, x: 0 }}
 			exit={{ opacity: 0, x: 20 }}

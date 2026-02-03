@@ -221,7 +221,7 @@ export function WorkflowVisualizer({
 							<span className="text-[#F347FF]">Parallel</span>
 						</div>
 						<div className="flex items-center gap-2">
-							<div className="w-3 h-3 bg-[#141414] border border-[#333]" />
+							<div className="w-3 h-3 bg-[#141414] border border-[#555]" />
 							<span className="text-[#666]">Task</span>
 						</div>
 					</div>
